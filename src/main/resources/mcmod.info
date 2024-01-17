@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "${modid}",
+    "name": "KinesMod",
+    "description": "Mod with features for Hypixel Skyblock.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "Kines"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

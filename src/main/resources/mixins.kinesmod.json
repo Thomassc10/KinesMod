@@ -1,0 +1,16 @@
+{
+  "package": "com.kines.kinesmod.mixins",
+  "refmap": "mixins.${modid}.refmap.json",
+  "minVersion": "0.7",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinGuiIngame",
+    "MixinNetworkManager",
+    "MixinWorldClient",
+    "MixinGuiContainer"
+  ],
+  "client": [
+    "AccessorMinecraft",
+    "AccessorRenderManager"
+  ]
+}
