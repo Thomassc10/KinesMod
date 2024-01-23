@@ -2,6 +2,7 @@ package com.kines.kinesmod.commands;
 
 import com.kines.kinesmod.KinesMod;
 import com.kines.kinesmod.features.mining.CrystalHollows;
+import com.kines.kinesmod.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -29,11 +30,11 @@ public class KinesCommand extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         Minecraft mc = Minecraft.getMinecraft();
         if (args.length == 0) {
-            KinesMod.openGui = 1;
+            Utils.openGui = 1;
             return;
         }
         if (args[0].equalsIgnoreCase("edit")) {
-            KinesMod.editGui = 1;
+            Utils.editGui = 1;
         } else if (args[0].equalsIgnoreCase("help")) {
             // send message with commands
             mc.thePlayer.addChatMessage(new ChatComponentText(""));

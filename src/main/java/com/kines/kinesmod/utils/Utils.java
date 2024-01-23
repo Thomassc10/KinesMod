@@ -18,8 +18,10 @@ import java.util.TimerTask;
 
 public class Utils {
 
-    public static boolean isInSkyBlock = false;
     private static final Minecraft mc = Minecraft.getMinecraft();
+    public static boolean isInSkyBlock = false;
+    public static int openGui = 0;
+    public static int editGui = 0;
     private static final Set<String> SKYBLOCK_IN_ALL_LANGUAGES = Sets.newHashSet("SKYBLOCK", "\u7A7A\u5C9B\u751F\u5B58", "\u7A7A\u5CF6\u751F\u5B58");
     public static Island island = Island.NONE;
 

@@ -1,6 +1,7 @@
 package com.kines.kinesmod.config;
 
 import com.kines.kinesmod.KinesMod;
+import com.kines.kinesmod.utils.Utils;
 import gg.essential.vigilance.Vigilant;
 import gg.essential.vigilance.data.Property;
 import gg.essential.vigilance.data.PropertyType;
@@ -579,7 +580,7 @@ public class Config extends Vigilant {
     )
     private void button() {
         Minecraft.getMinecraft().thePlayer.closeScreen();
-        KinesMod.editGui = 1;
+        Utils.editGui = 1;
     }
 
     @Property(

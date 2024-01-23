@@ -25,13 +25,13 @@ public class KinesListener {
 
     @SubscribeEvent
     public void onRender(TickEvent.ClientTickEvent event) {
-        if (KinesMod.openGui == 1) {
+        if (Utils.openGui == 1) {
             UScreen.displayScreen(KinesMod.config.gui());
-            KinesMod.openGui = 0;
+            Utils.openGui = 0;
         }
-        if (KinesMod.editGui == 1) {
+        if (Utils.editGui == 1) {
             UScreen.displayScreen(new EditLocationsGui());
-            KinesMod.editGui = 0;
+            Utils.editGui = 0;
         }
     }
 
