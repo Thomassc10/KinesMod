@@ -25,7 +25,6 @@ public class Pests {
         if (!Utils.isInSkyBlock) return;
         if (!Config.highlightPest) return;
         if (Utils.island != Island.GARDEN) return;
-        if (!ScoreboardUtils.hasLine("The Garden")) return;
         Entity entity = event.entity;
         if (!(entity instanceof EntityArmorStand)) return;
         if (!entity.hasCustomName()) return;

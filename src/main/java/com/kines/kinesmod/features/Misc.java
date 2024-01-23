@@ -1,10 +1,8 @@
 package com.kines.kinesmod.features;
 
 import com.kines.kinesmod.config.Config;
-import com.kines.kinesmod.events.BlockBreakEvent;
-import com.kines.kinesmod.events.GuiContainerEvent;
-import com.kines.kinesmod.events.PacketEvent;
 import com.kines.kinesmod.events.CheckRenderEntityEvent;
+import com.kines.kinesmod.events.GuiContainerEvent;
 import com.kines.kinesmod.utils.TitleUtils;
 import com.kines.kinesmod.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -20,14 +18,14 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.play.server.S25PacketBlockBreakAnim;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 import java.util.List;
 
@@ -39,10 +37,17 @@ public class Misc {
     public void onFallingBlock(CheckRenderEntityEvent event) {
         if (!Utils.isInSkyBlock) return;
         if (!Config.removeFallingBlocks) return;
-        if (!(event.entity instanceof EntityFallingBlock)) return;
-        EntityFallingBlock block = (EntityFallingBlock) event.entity;
-        if (block.getBlock().getBlock().getBlockState() != Blocks.beacon.getBlockState())
+        if (event.entity instanceof EntityFallingBlock)
             event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void onKeyInput(InputEvent.KeyInputEvent event) {
+        if (!Config.skipFrontCamera) return;
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.gameSettings.keyBindTogglePerspective.isKeyDown())
+            if (mc.gameSettings.thirdPersonView == 2)
+                mc.gameSettings.thirdPersonView = 0;
     }
 
     @SubscribeEvent
@@ -85,14 +90,6 @@ public class Misc {
             TitleUtils.sendTitleWithSub(EnumChatFormatting.RED + "God Pot", EnumChatFormatting.RED + "Expires in 30 Minutes", 3);
         } else if (message.contains("God Potion Expired!")) {
             TitleUtils.sendTitle(EnumChatFormatting.RED + "God Pot Expired", 3);
-        }
-    }
-
-    @SubscribeEvent
-    public void onPacketBreakAnim(PacketEvent.ReceivePacket event) {
-        if (event.packet instanceof S25PacketBlockBreakAnim) {
-            S25PacketBlockBreakAnim packet = (S25PacketBlockBreakAnim) event.packet;
-            MinecraftForge.EVENT_BUS.post(new BlockBreakEvent(packet));
         }
     }
 
@@ -157,16 +154,25 @@ public class Misc {
     }
 
     @SubscribeEvent
-    public void onRenderDead(RenderLivingEvent.Pre<EntityLivingBase> event) {
+    public void onRenderDead(RenderWorldLastEvent event) {
         if (!Utils.isInSkyBlock) return;
         if (!Config.hideDeadEntity) return;
-        if (!(event.entity instanceof EntityArmorStand)) return;
 
-        EntityArmorStand stand = (EntityArmorStand) event.entity;
-        if (!stand.hasCustomName()) return;
+        List<Entity> loadedEntityList = mc.theWorld.loadedEntityList;
+        if (loadedEntityList.isEmpty()) return;
+        for (Entity entity : loadedEntityList) {
+            if (!(entity instanceof EntityArmorStand)) return;
 
-        if (stand.getDisplayName().getUnformattedText().contains(" 0/")) {
-            event.setCanceled(true);
+            EntityArmorStand stand = (EntityArmorStand) entity;
+            if (!stand.hasCustomName()) return;
+
+            String name = stand.getDisplayName().getUnformattedText();
+            String[] nameSplit = name.split(" ");
+            if (nameSplit[nameSplit.length - 1].startsWith("0") /*&& nameSplit[nameSplit.length - 1].endsWith("❤")*/) {
+                System.out.println("----DEAD----");
+                stand.setAlwaysRenderNameTag(false);
+            }
         }
+
     }
 }

@@ -21,6 +21,7 @@ public class Kuudra {
 
     private final Minecraft mc = Minecraft.getMinecraft();
 
+    // TODO: make it more precise
     @SubscribeEvent
     public void supplies(RenderWorldLastEvent event) {
         if (!Utils.isInSkyBlock) return;

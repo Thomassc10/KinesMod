@@ -8,7 +8,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class WarnTitles {
+public class Warnings {
 
     @SubscribeEvent
     public void onMessageReceive(ClientChatReceivedEvent event) {

@@ -7,6 +7,8 @@ import com.kines.kinesmod.features.events.Diana;
 import com.kines.kinesmod.features.events.GreatSpook;
 import com.kines.kinesmod.features.garden.Garden;
 import com.kines.kinesmod.features.garden.Pests;
+import com.kines.kinesmod.features.mining.CrystalHollows;
+import com.kines.kinesmod.features.mining.SkyMall;
 import com.kines.kinesmod.features.performance.Fps;
 import com.kines.kinesmod.features.performance.Tps;
 import com.kines.kinesmod.gui.GuiManager;
@@ -25,35 +27,22 @@ import java.util.Arrays;
 @Mod(modid = "kinesmod", name = "KinesMod", version = KinesMod.VERSION, clientSideOnly = true)
 public class KinesMod {
 
+    // §
+
     /*
     TODO LIST:
-    - Pet candy usages?
-    - Diana solver?
-    - Trevor solver.
-    - Highlight chests, levers, etc... in dungeons.
-    - Display fishing time until hook on screen.
     - Reaper armor timer.
-    - Garden:
-        Spray timer.
-        Display current spray selected.
-        Composter is inactive.
-    - Highlight voidgloom beacon (beacon ray and timer)
     - Blaze slayer totem alert/time.
     - Draw waypoint from coords in chat.
     - Custom timer.
     - F7/M7 terminals waypoints (not solved ones).
     - M3 fire freeze timer.
-    - Blaze puzzle. (line to next blaze) *(i think skytils just added this...)
     - Draw box around wither door.
     - Cells alignment time.
     - Gyro.
-    - Timer above fishing bobble/on screen (for slug fish).
     - Kuudra
         HP display.
         Pearl throwing spots.
-     - Mining waypoints (normal and ordered) *(skytils just added this too....
-     - Something for Rift? Vampire stake?
-     - BetterMap (99% sure never happening)
      */
 
     public static final String VERSION = "0.1";
@@ -77,6 +66,7 @@ public class KinesMod {
                 new Diana(),
                 new Fps(),
                 new Garden(),
+                new Garden.SprayTimer(),
                 new GreatSpook(),
                 new HUD.Coordinates(),
                 new HUD.LobbyDate(),
@@ -85,7 +75,6 @@ public class KinesMod {
                 new Pests(),
                 new RemoveOverlays(),
                 new KinesListener(),
-                new SkipFrontCamera(),
                 new SkyMall(),
                 new Slayers(),
                 new Slayers.Gummy(),
@@ -93,7 +82,7 @@ public class KinesMod {
                 new TitleUtils(),
                 new ToggleSprint(),
                 new Tps(),
-                new WarnTitles()
+                new Warnings()
         ).forEach(MinecraftForge.EVENT_BUS::register);
         MinecraftForge.EVENT_BUS.register(this);
         ClientCommandHandler.instance.registerCommand(new KinesCommand());

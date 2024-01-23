@@ -12,11 +12,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class HUD {
 
-    private static Minecraft mc = Minecraft.getMinecraft();
+    private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static class Coordinates extends UIElement {
 
-        private String display = EnumChatFormatting.GOLD + "Loc" + EnumChatFormatting.GRAY + "> " + EnumChatFormatting.WHITE;
+        private final String display = EnumChatFormatting.GOLD + "Loc" + EnumChatFormatting.GRAY + "> " + EnumChatFormatting.WHITE;
         public Coordinates() {
             super("coordinates", new Point(10, 50));
             GuiManager.addElement(this);
@@ -53,7 +53,7 @@ public class HUD {
 
     public static class LobbyDate extends UIElement {
 
-        private String display = EnumChatFormatting.GOLD + "Day" + EnumChatFormatting.GRAY + "> " + EnumChatFormatting.WHITE;
+        private final String display = EnumChatFormatting.GOLD + "Day" + EnumChatFormatting.GRAY + "> " + EnumChatFormatting.WHITE;
         public LobbyDate() {
             super("lobby-date", new Point(20, 40));
             GuiManager.addElement(this);

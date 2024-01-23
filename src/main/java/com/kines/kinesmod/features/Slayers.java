@@ -111,12 +111,14 @@ public class Slayers {
             milli = 9;
             seconds--;
         }
+
         if (tick%2 == 0) {
             milli--;
         }
 
-        if (tick == 20)
+        if (tick == 20) {
             tick = 0;
+        }
 
         tick++;
     }
@@ -146,7 +148,7 @@ public class Slayers {
         if (!eman.isRiding()) return;
 
         RenderUtils.renderWaypoint(new Vector3f((float) eman.posX, (float) eman.posY + 1.67f, (float) eman.posZ),
-                EnumChatFormatting.BOLD + "" + EnumChatFormatting.GREEN + "Lazer: " + EnumChatFormatting.RED + seconds + "." + milli, false, event.partialTicks);
+                 EnumChatFormatting.GREEN + "" + EnumChatFormatting.BOLD + "Lazer: " + EnumChatFormatting.RED + seconds + "." + milli, false, event.partialTicks);
     }
 
     @SubscribeEvent
@@ -180,6 +182,9 @@ public class Slayers {
 
         private final String display = EnumChatFormatting.GOLD + "Gummy" + EnumChatFormatting.GRAY + "> " + EnumChatFormatting.WHITE;
         private boolean active;
+        private int minutes = 60;
+        private int seconds = 0;
+        private int tick = 0;
         public Gummy() {
             super("gummy-polar-bear", new Point(10, 60));
             GuiManager.addElement(this);
@@ -198,14 +203,18 @@ public class Slayers {
             }
         }
 
-        private int minutes = 60;
-        private int seconds = 0;
-        private int tick = 0;
-
         @SubscribeEvent
         public void onTick(TickEvent.ClientTickEvent event) {
             if (event.phase != TickEvent.Phase.START) return;
             if (!active) return;
+
+            if (minutes == 0 && seconds == 0) {
+                active = false;
+                minutes = 60;
+                tick = 0;
+                TitleUtils.sendTitle(EnumChatFormatting.RED + "Gummy Expired", 3);
+                return;
+            }
 
             if (seconds == 0) {
                 seconds = 59;
@@ -218,13 +227,6 @@ public class Slayers {
             }
 
             tick++;
-
-            if (minutes == 0 && seconds == 0) {
-                active = false;
-                minutes = 60;
-                tick = 0;
-                TitleUtils.sendTitle(EnumChatFormatting.RED + "Gummy Expired", 3);
-            }
         }
 
         @SubscribeEvent
@@ -234,13 +236,7 @@ public class Slayers {
 
             String text;
             if (active) {
-                String s = "";
-                String m = "";
-                if (seconds < 10)
-                    s = "0";
-                if (minutes < 10)
-                    m = "0";
-                text = m + minutes + ":" + s + seconds;
+                text = Utils.formatTimer(minutes, seconds);
             }
             else text = EnumChatFormatting.RED + "Inactive";
 
@@ -270,6 +266,9 @@ public class Slayers {
         private int potSec;
         private int potMin;
         private boolean active = false;
+        private int minutes;
+        private int seconds;
+        private int tick = 0;
         public WispPot() {
             super("wisp-potion", new Point(10, 60));
             GuiManager.addElement(this);
@@ -308,14 +307,19 @@ public class Slayers {
             }
         }
 
-        private int minutes;
-        private int seconds;
-        private int tick = 0;
+
 
         @SubscribeEvent
         public void onTick(TickEvent.ClientTickEvent event) {
             if (event.phase != TickEvent.Phase.START) return;
             if (!active) return;
+
+            if (minutes == 0 && seconds == 0) {
+                active = false;
+                tick = 0;
+                TitleUtils.sendTitle(EnumChatFormatting.RED + "Wisp Potion Expired", 3);
+                return;
+            }
 
             if (seconds == 0) {
                 seconds = 59;
@@ -328,12 +332,6 @@ public class Slayers {
             }
 
             tick++;
-
-            if (minutes == 0 && seconds == 0) {
-                active = false;
-                tick = 0;
-                TitleUtils.sendTitle(EnumChatFormatting.RED + "Wisp Potion Expired", 3);
-            }
         }
 
         @SubscribeEvent
@@ -343,13 +341,7 @@ public class Slayers {
 
             String text;
             if (active) {
-                String s = "";
-                String m = "";
-                if (seconds < 10)
-                    s = "0";
-                if (minutes < 10)
-                    m = "0";
-                text = m + minutes + ":" + s + seconds;
+                text = Utils.formatTimer(minutes, seconds);
             }
             else text = EnumChatFormatting.RED + "Inactive";
 

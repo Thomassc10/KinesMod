@@ -1,9 +1,18 @@
 package com.kines.kinesmod.listeners;
 
 import com.kines.kinesmod.KinesMod;
+import com.kines.kinesmod.events.GemstoneBreakEvent;
+import com.kines.kinesmod.events.PacketEvent;
 import com.kines.kinesmod.gui.EditLocationsGui;
 import com.kines.kinesmod.utils.*;
 import gg.essential.universal.UScreen;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.init.Blocks;
+import net.minecraft.network.play.server.S25PacketBlockBreakAnim;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -11,6 +20,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.util.List;
 
 public class KinesListener {
+
+    private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
     public void onRender(TickEvent.ClientTickEvent event) {
@@ -52,5 +63,31 @@ public class KinesListener {
         }
 
         Utils.island = Island.getByName(area);
+    }
+
+    private int lastProgress = -1;
+    @SubscribeEvent
+    public void onPacketBreakAnim(PacketEvent.ReceivePacket event) {
+        if (event.packet instanceof S25PacketBlockBreakAnim) {
+            if (!Utils.isInSkyBlock) return;
+            if (Utils.island != Island.CRYSTAL_HOLLOWS) return;
+            if (mc.objectMouseOver == null) return;
+            if (mc.objectMouseOver.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) return;
+            if (mc.objectMouseOver.getBlockPos() == null) return;
+
+            S25PacketBlockBreakAnim packet = (S25PacketBlockBreakAnim) event.packet;
+            BlockPos pos = mc.objectMouseOver.getBlockPos();
+
+            if (!packet.getPosition().equals(pos)) return;
+            IBlockState state = mc.theWorld.getBlockState(pos);
+            if (state.getBlock() == Blocks.stained_glass_pane || state.getBlock() == Blocks.stained_glass) {
+
+                if (packet.getProgress() == 10 && lastProgress == 9) {
+                    MinecraftForge.EVENT_BUS.post(new GemstoneBreakEvent(packet.getPosition(), packet.getProgress()));
+                }
+
+                lastProgress = packet.getProgress();
+            }
+        }
     }
 }

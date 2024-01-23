@@ -1,4 +1,4 @@
-package com.kines.kinesmod.features;
+package com.kines.kinesmod.features.mining;
 
 import com.kines.kinesmod.config.Config;
 import com.kines.kinesmod.gui.GuiManager;
@@ -72,16 +72,21 @@ public class SkyMall extends UIElement {
     }
 
     public String getShorterBuff(String buff) {
+        if (buff.contains("Mining Speed."))
+            return "+100 Mining Speed";
+        else if (buff.contains("Mining Fortune"))
+            return "+50 Fortune";
         switch (buff) {
-            case "Gain +100 ⸕ Mining Speed.": return "+100 Speed";
-            case "Gain +50 ☘ Mining Fortune.": return "+50 Fortune";
-            case "+15% chance to gain extra ᠅ Mithril Powder while mining.": return "+15% Mithril Powder";
+            case "Gain +15% more Powder while mining.": return "+15% Powder";
             case "Reduce Pickaxe Ability cooldown by 20%.": return "Ability cooldown";
-            case "10x chance to find Goblins while mining.": return "10x Goblins";
-            case "5x Titanium drops": return "5x Titanium.";
+            case "10x chance to find Golden and Diamond Goblins.": return "10x Goblins";
+            case "Gain 5x Titanium drops.": return "5x Titanium";
             default:
-                break;
+                return "";
         }
-        return "";
     }
+
+    /*case "Gain +100 ⸕ Mining Speed.": return "+100 Speed";*/
+    /*case "Gain +50 ☘ Mining Fortune.": return "+50 Fortune";*/
+    /*case "+15% chance to gain extra ᠅ Mithril Powder while mining.": return "+15% Mithril Powder";*/
 }

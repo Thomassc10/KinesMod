@@ -2,12 +2,10 @@ package com.kines.kinesmod.features.performance;
 
 import com.kines.kinesmod.config.Config;
 import com.kines.kinesmod.events.PacketEvent;
-import com.kines.kinesmod.gui.EditLocationsGui;
 import com.kines.kinesmod.gui.GuiManager;
 import com.kines.kinesmod.gui.elements.Point;
 import com.kines.kinesmod.gui.elements.UIElement;
 import com.kines.kinesmod.utils.Utils;
-import gg.essential.universal.UScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -16,72 +14,64 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-/*
- Adapted from SkyHanni's feature: https://github.com/hannibal002/SkyHanni/blob/beta/src/main/java/at/hannibal2/skyhanni/features/misc/TpsCounter.kt
- */
 public class Tps extends UIElement {
 
-    private Minecraft mc = Minecraft.getMinecraft();
+    private final Minecraft mc = Minecraft.getMinecraft();
     private int packetsFromLastSecond = 0;
-    public static List<Integer> tpsList = new ArrayList<>();
+    private List<Integer> tpsList = new ArrayList<>();
     private int ignoreFirstTicks = 3;
     private boolean hasPacketReceived = false;
     private double tps = -1;
+    private int ticks = 0;
 
     private final String display = EnumChatFormatting.GOLD + "Tps" + EnumChatFormatting.GRAY + "> " + EnumChatFormatting.WHITE;
     public Tps() {
         super("tps-display", new Point(new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() + 30, 40));
         GuiManager.addElement(this);
-        calculate();
     }
 
-    public void calculate() {
-        TimerTask task1 = new TimerTask() {
-            public void run() {
-                if (!Config.showTps) return;
-                if (packetsFromLastSecond == 0) return;
-                if (ignoreFirstTicks > 0) {
-                    ignoreFirstTicks--;
-                    packetsFromLastSecond = 0;
-                    return;
-                }
-                tpsList.add(packetsFromLastSecond);
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) return;
+        if (!Config.showTps) return;
+
+        if (hasPacketReceived) {
+            hasPacketReceived = false;
+            packetsFromLastSecond++;
+        }
+
+        if (ticks == 20) {
+            ticks = 0;
+
+            if (packetsFromLastSecond == 0) return;
+            if (ignoreFirstTicks > 0) {
+                ignoreFirstTicks--;
                 packetsFromLastSecond = 0;
-                if (tpsList.size() > 10) {
-                    tpsList = tpsList.subList(1, tpsList.size());
-                }
-                if (tpsList.size() >= 3) {
-                    double sum = 0;
-                    for (int tps : tpsList) {
-                        sum += tps;
-                    }
-                    tps = sum / tpsList.size();
-                    if (tps > 20) tps = 20.0;
-                }
-                if (tpsList.isEmpty()) {
-                    packetsFromLastSecond = 0;
-                    ignoreFirstTicks = 3;
-                    tps = -1;
-                }
+                return;
             }
-        };
-        TimerTask task2 = new TimerTask() {
-            public void run() {
-                if (!Config.showTps) return;
-                if (hasPacketReceived) {
-                    hasPacketReceived = false;
-                    packetsFromLastSecond++;
-                }
+            tpsList.add(packetsFromLastSecond);
+            packetsFromLastSecond = 0;
+            if (tpsList.size() > 10) {
+                //tpsList = tpsList.subList(1, tpsList.size());
+                tpsList = new ArrayList<>(tpsList.subList(1, tpsList.size()));
             }
-        };
-        Timer timer = new Timer();
-        /*Timer timer1 = new Timer("kines-tps-counter-seconds");
-        Timer timer2 = new Timer("kines-tps-counter-ticks");*/
-        timer.scheduleAtFixedRate(task1, 0, 1000);
-        timer.scheduleAtFixedRate(task2, 0, 50);
+            if (tpsList.size() >= 3) {
+                double sum = 0;
+                for (int tps : tpsList) {
+                    sum += tps;
+                }
+                tps = sum / tpsList.size();
+                tps = Math.min(20.0, tps);
+            }
+            return;
+        }
+
+        ticks++;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
@@ -96,6 +86,7 @@ public class Tps extends UIElement {
         packetsFromLastSecond = 0;
         ignoreFirstTicks = 3;
         tps = -1;
+        ticks = 0;
     }
 
     @SubscribeEvent

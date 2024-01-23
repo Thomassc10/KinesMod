@@ -10,14 +10,14 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class RenderUtils {
 
@@ -66,6 +66,15 @@ public class RenderUtils {
     }
 
     public static void renderWaypoint(Vector3f vec, String text, boolean distance, float partialTicks) {
+        renderWaypoint(vec, Collections.singletonList(text), distance, partialTicks);
+    }
+
+    public static void renderWaypoint(BlockPos pos, String text, boolean distance, float partialTicks) {
+        renderWaypoint(new Vector3f(pos.getX(), pos.getY(), pos.getZ()), Collections.singletonList(text), distance, partialTicks);
+    }
+
+    public static void renderWaypoint(Vector3f vec, List<String> lines, boolean distance, float partialTicks) {
+        GlStateManager.alphaFunc(516, 0.1F);
         GlStateManager.pushMatrix();
 
         Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
@@ -77,24 +86,28 @@ public class RenderUtils {
         double y = vec.y - viewerY - viewer.getEyeHeight();
         double z = vec.z - viewerZ;
 
+        double distSq = x * x + y * y + z * z;
+        double dist = Math.sqrt(distSq);
         if (distance) {
-            double distSq = x * x + y * y + z * z;
-            double dist = Math.sqrt(distSq);
             if (distSq > 144) {
-                x *= 14 / dist;
-                y *= 14 / dist;
-                z *= 14 / dist;
+                x *= 12 / dist;
+                y *= 12 / dist;
+                z *= 12 / dist;
             }
         }
 
         GlStateManager.translate(x, y, z);
         GlStateManager.translate(0, viewer.getEyeHeight(), 0);
 
-        renderText(text);
+        lines = new ArrayList<>(lines);
+        if (distance)
+            lines.add(EnumChatFormatting.YELLOW.toString() + Math.round(dist) + "m");
+        renderNameTag(lines, distance);
+
         GlStateManager.popMatrix();
     }
 
-    public static void renderText(String text) {
+    public static void renderNameTag(List<String> lines, boolean distance) {
         GlStateManager.pushMatrix();
         GlStateManager.depthMask(false);
         GlStateManager.disableDepth();
@@ -102,12 +115,31 @@ public class RenderUtils {
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.rotate(-mc.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(mc.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
-        GlStateManager.scale(-0.04, -0.04, 0.04);
+        float f = distance ? 0.0266666688F : 0.04F;
+        GlStateManager.scale(-f, -f, f);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
-        FontRenderer renderer = mc.fontRendererObj;
-        renderer.drawString(text, -renderer.getStringWidth(text) / 2, 0, -1);
+        FontRenderer fr = mc.fontRendererObj;
+        for (String str : lines) {
+            int j = fr.getStringWidth(str) / 2;
 
-        GlStateManager.depthMask(true);
+            GlStateManager.disableTexture2D();
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+            worldrenderer.pos(-j - 1, -1, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos(-j - 1, 8, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos(j + 1, 8, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos(j + 1, -1, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            tessellator.draw();
+            GlStateManager.enableTexture2D();
+
+            fr.drawString(str, -fr.getStringWidth(str) / 2, 0, 553648127);
+            GlStateManager.depthMask(true);
+
+            fr.drawString(str, -fr.getStringWidth(str) / 2, 0, -1);
+            GlStateManager.translate(0, 10f, 0);
+        }
+
         GlStateManager.enableDepth();
         GlStateManager.enableBlend();
         GlStateManager.popMatrix();

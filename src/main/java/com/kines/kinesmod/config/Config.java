@@ -137,8 +137,8 @@ public class Config extends Vigilant {
 
     @Property(
             type = PropertyType.SWITCH,
-            name = "CH Wypoints",
-            description = "Just some waypoints for the crystal hollows.",
+            name = "CH Waypoints",
+            description = "Just some waypoints for the Crystal Hollows.",
             category = "Mining",
             subcategory = "Waypoints"
     )
@@ -189,6 +189,24 @@ public class Config extends Vigilant {
     )
     public static boolean shorterBuff = false;
 
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Gemstone Regen Timer",
+            description = "Creates a waypoint with a timer for the regen of the gemstone vein. (For some reason it doesn't detect when speed boost is active :/)",
+            category = "Mining",
+            subcategory = "Waypoints"
+    )
+    public static boolean gemstoneTimer = false;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "CH Pass Renew",
+            description = "Automatically renew your Crystal Hollow' pass when its about to run out. \n&cThis is a chat macro.",
+            category = "Mining",
+            subcategory = "General"
+    )
+    public static boolean chPass = false;
+
     /*
     Crimson Isle
      */
@@ -225,12 +243,11 @@ public class Config extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Auto Accept",
-            description = "Automatically accepts the party invite from your vanquisher party. It takes the parameters from \"Auto Invite&Warp\". " +
-                    "Other people in your group should probably have this too, to prevent the warp from breaking.",
+            description = "Automatically accepts the party invite from your vanquisher party. It takes the parameters from \"Auto Invite&Warp\".",
             category = "Crimson Isle",
             subcategory = "Vanquisher"
     )
-    public static boolean acceptParty = true;
+    public static boolean acceptParty = false;
 
     @Property(
             type = PropertyType.SWITCH,
@@ -431,6 +448,15 @@ public class Config extends Vigilant {
             subcategory = "General"
     )
     public static boolean milestonesLevel = false;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Spray Timer",
+            description = "Shows the time left on your spray and alerts you when it ends. (Should it pause if you leave the garden? idk)",
+            category = "Garden",
+            subcategory = "Pests"
+    )
+    public static boolean sprayTimer = false;
 
     /*@Property(
             type = PropertyType.SWITCH,

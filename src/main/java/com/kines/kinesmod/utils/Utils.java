@@ -95,6 +95,8 @@ public class Utils {
     }
 
     public static int romanToInteger(String s) {
+        if (isNum(s))
+            return Integer.parseInt(s);
         int total = 0;
         for (int i = 0; i < s.length(); i++) {
             int s1 = parseRoman(s.charAt(i));
@@ -113,6 +115,7 @@ public class Utils {
         try {
             Integer.parseInt(s);
         } catch (Exception e) {
+            System.out.println("[KinesMod] Not an integer!");
             return false;
         }
         return true;
@@ -125,5 +128,15 @@ public class Utils {
         mc.fontRendererObj.drawStringWithShadow(s, slot.xDisplayPosition + 19 - 2 - fr.getStringWidth(s), slot.yDisplayPosition + 6 + 3, 16777215);
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();
+    }
+
+    public static String formatTimer(int min, int sec) {
+        String s = "";
+        String m = "";
+        if (sec < 10)
+            s = "0";
+        if (min < 10)
+            m = "0";
+        return m + min + ":" + s + sec;
     }
 }

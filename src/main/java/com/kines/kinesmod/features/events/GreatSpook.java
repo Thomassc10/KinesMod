@@ -68,11 +68,8 @@ public class GreatSpook extends UIElement {
         EnumChatFormatting color = EnumChatFormatting.YELLOW;
         if (minutes >= 3)
             color = EnumChatFormatting.GREEN;
-        String s = "";
-        if (seconds < 10)
-            s = "0";
-        Point point = this.getPos();
-        renderer.drawStringWithShadow(display + color + minutes + ":" + s + seconds, point.getX(), point.getY(), 0);
+
+        renderer.drawStringWithShadow(display + color + Utils.formatTimer(minutes, seconds), this.getX(), this.getY(), 0);
     }
 
     @SubscribeEvent
