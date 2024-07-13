@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -22,10 +21,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.List;
 
@@ -84,6 +83,7 @@ public class Misc {
     public void onPotionExpire(ClientChatReceivedEvent event) {
         if (!Utils.isInSkyBlock) return;
         if (!Config.godPotExpired) return;
+        if (event.type != 0) return;
 
         String message = event.message.getUnformattedText();
         if (message.contains("God Potion expires in 30 Minutes")) {
@@ -97,6 +97,7 @@ public class Misc {
     public void onMessage(ClientChatReceivedEvent event) {
         if (!Utils.isInSkyBlock) return;
         if (!Config.autoLobby) return;
+        if (event.type != 0) return;
 
         if (event.message.getUnformattedText().contains("You were kicked while joining that server!")) {
             Utils.scheduleCommand(1000, "/l");
@@ -153,26 +154,35 @@ public class Misc {
         }
     }
 
+    private int tick;
+
     @SubscribeEvent
-    public void onRenderDead(RenderWorldLastEvent event) {
+    public void onRenderDead(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) return;
         if (!Utils.isInSkyBlock) return;
         if (!Config.hideDeadEntity) return;
 
-        List<Entity> loadedEntityList = mc.theWorld.loadedEntityList;
-        if (loadedEntityList.isEmpty()) return;
-        for (Entity entity : loadedEntityList) {
-            if (!(entity instanceof EntityArmorStand)) return;
-
-            EntityArmorStand stand = (EntityArmorStand) entity;
-            if (!stand.hasCustomName()) return;
-
-            String name = stand.getDisplayName().getUnformattedText();
-            String[] nameSplit = name.split(" ");
-            if (nameSplit[nameSplit.length - 1].startsWith("0") /*&& nameSplit[nameSplit.length - 1].endsWith("❤")*/) {
-                System.out.println("----DEAD----");
-                stand.setAlwaysRenderNameTag(false);
+        if (tick%4 == 0) {
+            List<Entity> loadedEntityList = mc.theWorld.loadedEntityList;
+            if (loadedEntityList.isEmpty()) return;
+            for (Entity entity : loadedEntityList) {
+                if (entity instanceof EntityArmorStand) {
+                    EntityArmorStand stand = (EntityArmorStand) entity;
+                    if (stand.hasCustomName()) {
+                        String name = stand.getDisplayName().getUnformattedText();
+                        String[] nameSplit = name.split(" ");
+                        if (nameSplit.length == 0) return;
+                        if (nameSplit[nameSplit.length - 1].startsWith("0") /*&& nameSplit[nameSplit.length - 1].endsWith("❤")*/) {
+                            System.out.println("----DEAD----");
+                            stand.setAlwaysRenderNameTag(false);
+                            stand.setCustomNameTag("");
+                        }
+                    }
+                }
             }
+            tick = 0;
         }
 
+        tick++;
     }
 }

@@ -13,6 +13,7 @@ public class Warnings {
     @SubscribeEvent
     public void onMessageReceive(ClientChatReceivedEvent event) {
         if (!Utils.isInSkyBlock) return;
+        if (event.type != 0) return;
         String message = Utils.stripColor(event.message.getUnformattedText());
         if (Config.lordJawbus) {
             if (message.contains("was killed by Lord Jawbus.")) {

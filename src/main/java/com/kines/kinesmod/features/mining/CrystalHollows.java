@@ -130,6 +130,7 @@ public class CrystalHollows {
         if (!Utils.isInSkyBlock) return;
         if (Utils.island != Island.CRYSTAL_HOLLOWS) return;
         if (!Config.chPass) return;
+        if (event.type != 0) return;
 
         if (event.message.getUnformattedText().contains("Your pass to the Crystal Hollows will expire in 1 minute")) {
             Minecraft.getMinecraft().thePlayer.sendChatMessage("/purchasecrystallhollowspass");

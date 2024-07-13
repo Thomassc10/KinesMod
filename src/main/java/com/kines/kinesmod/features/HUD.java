@@ -64,7 +64,7 @@ public class HUD {
             if (!Utils.isInSkyBlock) return;
             if (!Config.showLobbyDate) return;
 
-            mc.fontRendererObj.drawStringWithShadow(display + mc.theWorld.getWorldTime()/20/60/20, this.getX(), this.getY(), 0);
+            mc.fontRendererObj.drawStringWithShadow(display + Utils.round((double) mc.theWorld.getWorldTime() /20/60/20, 2), this.getX(), this.getY(), 0);
         }
 
         @Override

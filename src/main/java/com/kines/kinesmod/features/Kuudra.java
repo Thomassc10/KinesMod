@@ -21,7 +21,7 @@ public class Kuudra {
 
     private final Minecraft mc = Minecraft.getMinecraft();
 
-    // TODO: make it more precise
+    // TODO: make it more precise | stop checking in last phase infernal (performance)
     @SubscribeEvent
     public void supplies(RenderWorldLastEvent event) {
         if (!Utils.isInSkyBlock) return;
@@ -42,7 +42,7 @@ public class Kuudra {
     // safe spot for stun: -173 23 -169
     private final BlockPos[] spots = {new BlockPos(-173, 23, -169), new BlockPos(-140, 78, -90), new BlockPos(-140, 78, -89),
                                         new BlockPos(-89, 78, -127)};
-    private final double[][] coordinates = {{-173.5, 23, -169.5}, {-140.5, 78, -90.5}, {-140.5, 78, -89.5}, {-89.5,78, -127.5}};
+    //private final double[][] coordinates = {{-173.5, 23, -169.5}, {-140.5, 78, -90.5}, {-140.5, 78, -89.5}, {-89.5,78, -127.5}};
 
     @SubscribeEvent
     public void safeSpots(RenderWorldLastEvent event) {
@@ -71,6 +71,8 @@ public class Kuudra {
         if (stand.getDisplayName().getUnformattedText().contains("[Lv"))
             event.setCanceled(true);
     }
+
+    // TODO: only check when in building phase (performance)
 
     @SubscribeEvent
     public void unfinishedSupplies(RenderWorldLastEvent event) {

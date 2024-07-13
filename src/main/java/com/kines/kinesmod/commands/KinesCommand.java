@@ -1,7 +1,7 @@
 package com.kines.kinesmod.commands;
 
-import com.kines.kinesmod.KinesMod;
 import com.kines.kinesmod.features.mining.CrystalHollows;
+import com.kines.kinesmod.utils.ScoreboardUtils;
 import com.kines.kinesmod.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -41,8 +41,13 @@ public class KinesCommand extends CommandBase {
         } else if (args[0].equalsIgnoreCase("cleargemstones")) {
             CrystalHollows.map.clear();
             mc.thePlayer.addChatMessage(new ChatComponentText("[KinesMod] Cleared all gemstones respawn timers."));
+        } else if (args[0].equalsIgnoreCase("score")) {
+            for (String sidebarLine : ScoreboardUtils.getSidebarLines()) {
+                mc.thePlayer.addChatMessage(new ChatComponentText(Utils.stripColor(sidebarLine)));
+                if (Utils.stripColor(sidebarLine).equals("Slay the boss!"))
+                    System.out.println("----Slay the boss!----");
+            }
         }
-
     }
 
     /*else if (args[0].equalsIgnoreCase("tps")) {

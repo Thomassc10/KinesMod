@@ -39,13 +39,13 @@ public class Utils {
 
     public static String getSkullTexture(ItemStack skull) {
         if (skull == null || !skull.hasTagCompound()) {
-            return null;
+            return "";
         }
         NBTTagCompound nbt = skull.getTagCompound();
         if (nbt.hasKey("SkullOwner", 10)) {
             return nbt.getCompoundTag("SkullOwner").getCompoundTag("Properties").getTagList("textures", 10).getCompoundTagAt(0).getString("Value");
         }
-        return null;
+        return "";
     }
 
     public static void hasSkyBlockScoreboard() {
@@ -117,7 +117,7 @@ public class Utils {
         try {
             Integer.parseInt(s);
         } catch (Exception e) {
-            System.out.println("[KinesMod] Not an integer!");
+            //System.out.println("[KinesMod] Not an integer!");
             return false;
         }
         return true;

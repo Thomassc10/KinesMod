@@ -5,6 +5,7 @@ import com.kines.kinesmod.events.GuiContainerEvent;
 import com.kines.kinesmod.gui.GuiManager;
 import com.kines.kinesmod.gui.elements.Point;
 import com.kines.kinesmod.gui.elements.UIElement;
+import com.kines.kinesmod.utils.Island;
 import com.kines.kinesmod.utils.TitleUtils;
 import com.kines.kinesmod.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -60,6 +61,8 @@ public class Garden {
         @SubscribeEvent
         public void onMessageReceived(ClientChatReceivedEvent event) {
             if (!Utils.isInSkyBlock) return;
+            if (Utils.island != Island.GARDEN) return;
+            if (event.type != 0) return;
             if (event.message.getUnformattedText().contains("SPRAYONATOR! This will expire in 30m!")) {
                 active = true;
             }

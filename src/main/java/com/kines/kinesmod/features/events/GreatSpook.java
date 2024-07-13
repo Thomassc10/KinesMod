@@ -1,6 +1,5 @@
 package com.kines.kinesmod.features.events;
 
-import com.kines.kinesmod.KinesMod;
 import com.kines.kinesmod.config.Config;
 import com.kines.kinesmod.gui.GuiManager;
 import com.kines.kinesmod.gui.elements.Point;
@@ -34,6 +33,7 @@ public class GreatSpook extends UIElement {
     @SubscribeEvent
     public void onMathSolve(ClientChatReceivedEvent event) throws Calculator.CalculatorException {
         if (!Utils.isInSkyBlock) return;
+        if (event.type != 0) return;
         String message = event.message.getUnformattedText();
         if (Config.calculateMath) {
             if (message.contains(Utils.stripColor("QUICK MATHS! Solve:"))) {

@@ -27,6 +27,7 @@ public class SkyMall extends UIElement {
     @SubscribeEvent
     public void onMessage(ClientChatReceivedEvent event) {
         if (!Utils.isInSkyBlock) return;
+        if (event.type != 0) return;
         String message = event.message.getUnformattedText();
         if (message.contains("New buff:")) {
             buff = message.split(": ")[1];

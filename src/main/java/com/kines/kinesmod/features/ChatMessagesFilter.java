@@ -15,12 +15,13 @@ public class ChatMessagesFilter {
     Staff have banned an additional 8,335 in the
     Blacklisted modifications are a bannable
      */
-    String[] messages = {"♨", "Profile ID:", "You are playing on profile:", "[WATCHDOG ANNOUNCEMENT]", "Watchdog has banned", "Staff have banned an additional", "Blacklisted modifications are a bannable",
+    String[] messages = {/*"♨", */"Profile ID:", "You are playing on profile:", "[WATCHDOG ANNOUNCEMENT]", "Watchdog has banned", "Staff have banned an additional", "Blacklisted modifications are a bannable",
                         "slid into the lobby!", "GEXP", "FIRE SALE", "from playing SkyBlock!", "joined the lobby!"};
 
     @SubscribeEvent
     public void onMessageReceive(ClientChatReceivedEvent event) {
         if (!Config.filterMessages) return;
+        if (event.type != 0) return;
         String message = event.message.getUnformattedText();
 
         for (String str : messages) {

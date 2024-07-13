@@ -25,6 +25,7 @@ public class CrimsonIsle {
         if (!Utils.isInSkyBlock) return;
         if (Config.alertVanquisher == 0) return;
         if (Utils.island != Island.CRIMSON_ISLE) return;
+        if (event.type != 0) return;
 
         if (event.message.getUnformattedText().contains("A Vanquisher is spawning nearby!")) {
             x = mc.thePlayer.getPosition().getX();
@@ -46,8 +47,9 @@ public class CrimsonIsle {
         if (!Utils.isInSkyBlock) return;
         if (Utils.island != Island.CRIMSON_ISLE) return;
         if (!invited) return;
+        if (event.type != 0) return;
 
-        if (event.message.getUnformattedText().contains("joined the party")) {
+        if (event.message.getUnformattedText().contains("joined the party.")) {
             accepted++;
             if (accepted == Config.partyMembers.split(" ").length) {
                 mc.thePlayer.sendChatMessage("/p warp");
@@ -62,6 +64,7 @@ public class CrimsonIsle {
         if (!Utils.isInSkyBlock) return;
         if (!Config.acceptParty) return;
         if (Config.partyMembers.isEmpty()) return;
+        if (event.type != 0) return;
         String[] party = Config.partyMembers.split(" ");
 
         for (String s : party) {

@@ -14,6 +14,7 @@ public class Diana {
     public void onMessage(ClientChatReceivedEvent event) {
         if (!Utils.isInSkyBlock) return;
         if (Config.alertInquisitor == 0) return;
+        if (event.type != 0) return;
 
         if (event.message.getUnformattedText().contains("Danger! You dug out a Minos Inquisitor!")) {
             int x = mc.thePlayer.getPosition().getX();

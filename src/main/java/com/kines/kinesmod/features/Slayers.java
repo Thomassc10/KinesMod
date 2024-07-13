@@ -4,8 +4,8 @@ import com.kines.kinesmod.config.Config;
 import com.kines.kinesmod.gui.GuiManager;
 import com.kines.kinesmod.gui.elements.Point;
 import com.kines.kinesmod.gui.elements.UIElement;
+import com.kines.kinesmod.utils.Island;
 import com.kines.kinesmod.utils.RenderUtils;
-import com.kines.kinesmod.utils.ScoreboardUtils;
 import com.kines.kinesmod.utils.TitleUtils;
 import com.kines.kinesmod.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -27,7 +27,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Slayers {
@@ -51,39 +50,50 @@ public class Slayers {
         double x = event.x + RenderUtils.getRenderX();
         double y = event.y + RenderUtils.getRenderY();
         double z = event.z + RenderUtils.getRenderZ();
-        for (String str : zombieSlayer) {
-            if (name.contains(str)) {
-                RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 0.5, y - 2, z - 0.5, x + 0.5, y, z + 0.5),
-                        Color.CYAN, 3, RenderUtils.getPartialTicks());
-                return;
+        if (Utils.island == Island.HUB) {
+            for (String str : zombieSlayer) {
+                if (name.contains(str)) {
+                    RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 0.5, y - 2, z - 0.5, x + 0.5, y, z + 0.5),
+                            Color.CYAN, 3, RenderUtils.getPartialTicks());
+                    return;
+                }
             }
-        }
-        for (String str : spiderSlayer) {
-            if (name.contains(str)) {
-                RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 1, y - 1, z - 1, x + 1, y, z + 1),
-                        Color.CYAN, 3, RenderUtils.getPartialTicks());
-                return;
+            for (String str : wolfSlayer) {
+                if (name.contains(str)) {
+                    RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 0.5, y - 1, z - 0.5, x + 0.5, y, z + 0.5),
+                            Color.CYAN, 3, RenderUtils.getPartialTicks());
+                    return;
+                }
             }
+            return;
         }
-        for (String str : wolfSlayer) {
-            if (name.contains(str)) {
-                RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 0.5, y - 1, z - 0.5, x + 0.5, y, z + 0.5),
-                        Color.CYAN, 3, RenderUtils.getPartialTicks());
-                return;
+        if (Utils.island == Island.SPIDER_DEN) {
+            for (String str : spiderSlayer) {
+                if (name.contains(str)) {
+                    RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 1, y - 1, z - 1, x + 1, y, z + 1),
+                            Color.CYAN, 3, RenderUtils.getPartialTicks());
+                    return;
+                }
             }
+            return;
         }
-        for (String str : endermanSlayer) {
-            if (name.contains(str)) {
-                RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 0.5, y - 3, z - 0.5, x + 0.5, y, z + 0.5),
-                        Color.CYAN, 3, RenderUtils.getPartialTicks());
-                return;
+        if (Utils.island == Island.THE_END) {
+            for (String str : endermanSlayer) {
+                if (name.contains(str)) {
+                    RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 0.5, y - 3, z - 0.5, x + 0.5, y, z + 0.5),
+                            Color.CYAN, 3, RenderUtils.getPartialTicks());
+                    return;
+                }
             }
+            return;
         }
-        for (String str : blazeSlayer) {
-            if (name.contains(str)) {
-                RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 0.5, y - 2, z - 0.5, x + 0.5, y, z + 0.5),
-                        Color.CYAN, 3, RenderUtils.getPartialTicks());
-                return;
+        if (Utils.island == Island.CRIMSON_ISLE) {
+            for (String str : blazeSlayer) {
+                if (name.contains(str)) {
+                    RenderUtils.drawOutlinedBoundingBox(new AxisAlignedBB(x - 0.5, y - 2, z - 0.5, x + 0.5, y, z + 0.5),
+                            Color.CYAN, 3, RenderUtils.getPartialTicks());
+                    return;
+                }
             }
         }
     }
@@ -155,25 +165,25 @@ public class Slayers {
     public void onEyeHeads(RenderWorldLastEvent event) {
         if (!Utils.isInSkyBlock) return;
         if (!Config.highlightEyeThings) return;
-        if (!ScoreboardUtils.hasLine("Voidgloom Seraph")) return;
-        if (!ScoreboardUtils.hasLine("Slay the boss!")) return;
+        if (Utils.island != Island.THE_END) return;
+        /*if (!ScoreboardUtils.hasLine("Voidgloom Seraph")) return;
+        if (!ScoreboardUtils.hasLine("Slay the boss!")) return;*/
 
-        List<EntityArmorStand> stands = new ArrayList<>();
         List<Entity> entities = mc.theWorld.loadedEntityList;
         if (entities.isEmpty()) return;
 
         for (Entity entity : entities) {
-            if (entities instanceof EntityArmorStand)
-                stands.add((EntityArmorStand) entity);
-        }
-
-        for (EntityArmorStand stand : stands) {
-            if (Utils.getSkullTexture(stand.getEquipmentInSlot(4)).equals("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=")) {
-                double x = stand.posX + RenderUtils.getRenderX();
-                double y = stand.posY + RenderUtils.getRenderY();
-                double z = stand.posZ + RenderUtils.getRenderZ();
-                RenderUtils.drawOutlinedBoundingBox(
-                        new AxisAlignedBB(x + 0.5, y + 1, z + 0.5, x - 0.5, y + 2, z -0.5), Color.RED, 3, event.partialTicks);
+            if (entity instanceof EntityArmorStand) {
+                EntityArmorStand stand = (EntityArmorStand) entity;
+                double x = stand.posX;
+                double y = stand.posY;                  //eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=
+                double z = stand.posZ;                  //eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjU2MTU5NWQ5Yzc0NTc3OTZjNzE5ZmFlNDYzYTIyMjcxY2JjMDFjZjEwODA5ZjVhNjRjY2IzZDZhZTdmOGY2In19fQ==
+                if (stand.getEquipmentInSlot(4) != null) {
+                    if (Utils.getSkullTexture(stand.getEquipmentInSlot(4)).equals("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0=")) {
+                        RenderUtils.drawOutlinedBoundingBox(
+                                new AxisAlignedBB(x + 0.5, y + 0.7, z + 0.5, x - 0.5, y + 1.7, z - 0.5), Color.RED, 3, event.partialTicks);
+                    }
+                }
             }
         }
     }
@@ -193,6 +203,7 @@ public class Slayers {
         @SubscribeEvent
         public void onMessageReceived(ClientChatReceivedEvent event) {
             if (!Utils.isInSkyBlock) return;
+            if (event.type != 0) return;
             if (event.message.getUnformattedText().contains("You ate a Re-heated Gummy Polar Bear!")) {
                 if (active) {
                     minutes = 60;
@@ -278,6 +289,7 @@ public class Slayers {
         public void onChat(ClientChatReceivedEvent event) {
             if (!Utils.isInSkyBlock) return;
             if (!Config.wispTimer) return;
+            if (event.type != 0) return;
 
             if (event.message.getUnformattedText().contains("You splashed yourself with Wisp's Ice-Flavored Water I!")) {
                 System.out.println("-----Splash!-----");
