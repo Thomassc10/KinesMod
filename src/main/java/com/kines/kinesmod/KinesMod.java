@@ -45,7 +45,7 @@ public class KinesMod {
         Pearl throwing spots.
      */
 
-    public static final String VERSION = "0.1";
+    public static final String VERSION = "0.1.1";
     public static Config config;
     public static File dir = new File(new File("./config"), "kinesmod");
     public File cfg = new File("./config/kinesmod/config.json");
