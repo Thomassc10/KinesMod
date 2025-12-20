@@ -9,20 +9,31 @@ jobs:
   cleanup:
     name: "Initialize Repo"
     runs-on: ubuntu-latest
+    # This prevents the script from running on the original template repo
     if: github.event.repository.name != 'Forge1.8.9Template'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Updated to v4
+
       - name: Initialize Repo
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          
+          # Prepare variables
           owner=$(echo $GITHUB_REPOSITORY | cut -d/ -f1 | tr '[:upper:]' '[:lower:]')
           name=$(echo $GITHUB_REPOSITORY | cut -d/ -f2 | tr '[:upper:]' '[:lower:]' | tr -d "-" | tr -d ".")
           pack_name="com.github.${owner,,}.${name,,}"
           proj_name="$(echo $GITHUB_REPOSITORY | cut -d/ -f2)"
           modid="$(echo $name | sed 's/[^a-z]//g')"
+          
+          # Fix: Ensure the script is executable before running
+          chmod +x ./make-my-own.sh
+          
+          # Run the script
           ./make-my-own.sh "$pack_name" "$proj_name" "$modid"
+          
+          # Commit changes
           git add .
           git commit -F- <<EOF
           Initialize template repository proper
@@ -31,8 +42,9 @@ jobs:
           Set project name to $proj_name
           Set modid to $modid
           EOF
+
       - name: Push changes
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@master # Using master for latest bugfixes
         with:
           branch: ${{ github.ref }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
