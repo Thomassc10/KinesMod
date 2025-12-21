@@ -15,6 +15,12 @@ A Minecraft Forge mod with some features for Hypixel SkyBlock. This was created 
 **Features**
 
 <details>
+<summary>Commands</summary>
+  - /kines -> opens main menu
+  - /kines edit -> edit GUI locations
+</details>
+<details>
+  
 <summary>Misc</summary>
 
 - Toggle Sprint
